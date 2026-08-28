@@ -12,3 +12,5 @@ responses
 PyJWT
 cryptography
 dnspython
+celery
+redis

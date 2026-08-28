@@ -11,6 +11,18 @@ services:
       - postgres
       - redis
 
+  celery-worker:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    command: celery -A backend.worker.celery_app worker --loglevel=info
+    environment:
+      DATABASE_URL: postgresql+psycopg2://postgres:postgres@postgres:5432/vuln_scanner
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - postgres
+      - redis
+
   postgres:
     image: postgres:16-alpine
     environment:

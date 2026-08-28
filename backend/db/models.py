@@ -22,6 +22,7 @@ class Scan(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
     target_url: Mapped[str] = mapped_column(String, nullable=False)
+    jwt_token: Mapped[str | None] = mapped_column(String, nullable=True)
     status: Mapped[ScanStatus] = mapped_column(
         SqlEnum(ScanStatus, native_enum=False),
         default=ScanStatus.pending,

@@ -61,7 +61,7 @@ def create_scan(request: ScanRequest, db: Session = Depends(get_db)) -> dict[str
             detail="target_url must start with http:// or https://",
         )
 
-    scan = Scan(target_url=request.target_url)
+    scan = Scan(target_url=request.target_url, jwt_token=request.jwt_token)
     db.add(scan)
     db.commit()
     db.refresh(scan)
