@@ -3,3 +3,6 @@ pydantic
 requests
 pytest
 responses
+PyJWT
+cryptography
+dnspython
