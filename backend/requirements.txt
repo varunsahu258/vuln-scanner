@@ -5,3 +5,4 @@ pytest
 responses
 PyJWT
 cryptography
+dnspython

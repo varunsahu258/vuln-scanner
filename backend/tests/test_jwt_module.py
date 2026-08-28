@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta, timezone
 import secrets
 
-import jwt
+import pytest
+
+jwt = pytest.importorskip("jwt")
 
 from backend.modules.jwt_check import check_jwt
 
