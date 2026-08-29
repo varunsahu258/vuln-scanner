@@ -4,12 +4,18 @@ services:
       context: .
       dockerfile: backend/Dockerfile
     environment:
-      DATABASE_URL: postgresql+psycopg2://postgres:postgres@postgres:5432/vuln_scanner
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+      RATE_LIMIT_SCAN_PER_HOUR: ${RATE_LIMIT_SCAN_PER_HOUR}
+      RATE_LIMIT_READ_PER_HOUR: ${RATE_LIMIT_READ_PER_HOUR}
     ports:
       - "8000:8000"
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
   celery-worker:
     build:
@@ -17,27 +23,58 @@ services:
       dockerfile: backend/Dockerfile
     command: celery -A backend.worker.celery_app worker --loglevel=info
     environment:
-      DATABASE_URL: postgresql+psycopg2://postgres:postgres@postgres:5432/vuln_scanner
-      REDIS_URL: redis://redis:6379/0
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+      RATE_LIMIT_SCAN_PER_HOUR: ${RATE_LIMIT_SCAN_PER_HOUR}
+      RATE_LIMIT_READ_PER_HOUR: ${RATE_LIMIT_READ_PER_HOUR}
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: vuln_scanner
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   redis:
     image: redis:7-alpine
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  frontend:
+    build:
+      context: ./frontend
+      target: development
+    environment:
+      VITE_API_URL: ${VITE_API_URL}
+      VITE_MOCK_API: ${VITE_MOCK_API:-false}
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:
+  frontend_node_modules:

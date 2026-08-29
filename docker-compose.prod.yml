@@ -1,0 +1,49 @@
+# Production overlay. Build and publish the images before running:
+# docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+services:
+  backend:
+    build: !reset null
+    image: ${BACKEND_IMAGE}
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+      RATE_LIMIT_SCAN_PER_HOUR: ${RATE_LIMIT_SCAN_PER_HOUR}
+      RATE_LIMIT_READ_PER_HOUR: ${RATE_LIMIT_READ_PER_HOUR}
+
+  celery-worker:
+    build: !reset null
+    image: ${BACKEND_IMAGE}
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+      RATE_LIMIT_SCAN_PER_HOUR: ${RATE_LIMIT_SCAN_PER_HOUR}
+      RATE_LIMIT_READ_PER_HOUR: ${RATE_LIMIT_READ_PER_HOUR}
+
+  frontend:
+    build: !reset null
+    image: ${FRONTEND_IMAGE}
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT}:80"
+    environment: !reset null
+    volumes: !reset []
+
+  # Use managed Postgres and Redis in production when possible. These service
+  # definitions remain available for self-hosted deployments.
+  postgres:
+    profiles: [self-hosted]
+    restart: unless-stopped
+    ports: !reset []
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+  redis:
+    profiles: [self-hosted]
+    restart: unless-stopped
+    ports: !reset []
