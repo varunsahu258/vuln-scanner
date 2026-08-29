@@ -1,8 +1,10 @@
+from unittest.mock import patch
 from uuid import UUID, uuid4
 
 import pytest
 
 pytest.importorskip("sqlalchemy")
+pytest.importorskip("httpx")
 
 from fastapi.testclient import TestClient
 
@@ -16,12 +18,13 @@ def clean_scans_table():
     db = SessionLocal()
     db.query(Scan).delete()
     db.commit()
-    try:
-        yield
-    finally:
-        db.query(Scan).delete()
-        db.commit()
-        db.close()
+    with patch("backend.api.main.is_safe_target", return_value=(True, "")):
+        try:
+            yield
+        finally:
+            db.query(Scan).delete()
+            db.commit()
+            db.close()
 
 
 @pytest.fixture
