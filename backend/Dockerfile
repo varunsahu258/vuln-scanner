@@ -15,5 +15,7 @@ RUN pip install --no-cache-dir /wheels/* && rm -rf /wheels
 COPY backend /app/backend
 COPY alembic.ini /app/alembic.ini
 COPY backend/supervisord.conf /app/supervisord.conf
+COPY backend/start.sh /app/start.sh
+RUN chmod +x /app/start.sh
 
-CMD ["supervisord", "-c", "supervisord.conf"]
+CMD ["/app/start.sh"]
