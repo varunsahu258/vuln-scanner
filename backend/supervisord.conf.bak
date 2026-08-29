@@ -10,7 +10,7 @@ stderr_logfile=/dev/stderr
 stderr_logfile_maxbytes=0
 
 [program:worker]
-command=celery -A backend.worker.celery_app worker --loglevel=info --concurrency=2
+command=celery -A backend.worker.celery_app worker --loglevel=info
 autorestart=true
 stdout_logfile=/dev/stdout
 stdout_logfile_maxbytes=0
