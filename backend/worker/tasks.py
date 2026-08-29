@@ -81,9 +81,11 @@ def run_scan(self, scan_id: str) -> None:
                 check_subdomain_recon,
             ]
             with ThreadPoolExecutor(max_workers=len(checks)) as executor:
+                target_url = scan.target_url  # read once, in the main thread, before spawning workers
+
                 module_results = [
                     _as_module_result(result)
-                    for result in executor.map(lambda check: check(scan.target_url), checks)
+                    for result in executor.map(lambda check: check(target_url), checks)
                 ]
 
             if scan.jwt_token:

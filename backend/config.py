@@ -2,7 +2,10 @@
 
 from dataclasses import dataclass
 import os
+from dotenv import load_dotenv
 
+_BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(_BASE_DIR, ".env"))
 
 def _positive_int(name: str, default: int) -> int:
     try:

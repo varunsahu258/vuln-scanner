@@ -21,7 +21,7 @@ from backend.db.models import Scan
 from backend.logging_config import configure_logging
 from backend.models.scan import ScanRequest
 from backend.security.ssrf_guard import is_safe_target
-
+from backend.worker.tasks import run_scan
 
 Base.metadata.create_all(bind=engine)
 configure_logging()
@@ -125,7 +125,7 @@ def create_scan(
     db.commit()
     db.refresh(scan)
 
-    # TODO: enqueue actual scan job here — wiring point for the orchestration layer
+    run_scan.delay(str(scan.id))
     _log_scan_request(request, scan_request.target_url, "accepted", str(scan.id))
     return {"scan_id": str(scan.id)}
 
