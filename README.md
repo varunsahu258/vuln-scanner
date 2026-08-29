@@ -6,6 +6,8 @@ Vuln Scanner is a web application for reviewing the **passive security posture**
 
 This project is intentionally **not** a penetration-testing or exploitation framework. Active SQL injection attempts, authentication brute-forcing, payload-based exploitation, destructive/state-modifying checks, and scanning private/internal networks are out of scope by design. This makes the service suitable for careful public deployment when its authorization and rate-limit safeguards are retained.
 
+## LIVE DEMO LINK:
+[Vulnerability Scanner]((https://vuln-scanner.varunsahu258.workers.dev/))
 ## Table of contents
 
 - [Architecture](#architecture)
