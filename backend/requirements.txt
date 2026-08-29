@@ -16,3 +16,4 @@ dnspython
 celery
 redis
 slowapi
+supervisor

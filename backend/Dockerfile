@@ -14,6 +14,6 @@ COPY --from=builder /wheels /wheels
 RUN pip install --no-cache-dir /wheels/* && rm -rf /wheels
 COPY backend /app/backend
 COPY alembic.ini /app/alembic.ini
+COPY backend/supervisord.conf /app/supervisord.conf
 
-EXPOSE 8000
-CMD ["uvicorn", "backend.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["supervisord", "-c", "supervisord.conf"]
