@@ -18,4 +18,5 @@ dist/
 test.db
 
 # OS
+.DS_Store.idea/
 .DS_Store
