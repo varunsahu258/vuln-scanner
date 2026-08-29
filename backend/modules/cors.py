@@ -117,6 +117,19 @@ def check_cors(target_url: str) -> ModuleResult:
         options_response = requests.options(
             target_url, headers=_REQUEST_HEADERS, timeout=10
         )
+    except requests.exceptions.SSLError as exc:
+        return ModuleResult(
+            module_name="cors",
+            findings=[
+                _finding(
+                    "tls_verification_failed",
+                    "high",
+                    False,
+                    f"Could not verify target's TLS certificate, so CORS was not checked: {exc}",
+                )
+            ],
+            score="F",
+        )
     except requests.RequestException as exc:
         return ModuleResult(
             module_name="cors",

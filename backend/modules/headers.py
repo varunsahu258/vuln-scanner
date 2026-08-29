@@ -57,6 +57,19 @@ def check_headers(target_url: str) -> ModuleResult:
             allow_redirects=True,
             headers=_REQUEST_HEADERS,
         )
+    except requests.exceptions.SSLError as exc:
+        return ModuleResult(
+            module_name="headers",
+            findings=[
+                _finding(
+                    "tls_verification_failed",
+                    "high",
+                    False,
+                    f"Could not verify target's TLS certificate, so headers were not checked: {exc}",
+                )
+            ],
+            score="F",
+        )
     except requests.RequestException as exc:
         return ModuleResult(
             module_name="headers",

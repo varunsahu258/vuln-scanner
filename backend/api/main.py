@@ -23,7 +23,7 @@ from backend.models.scan import ScanRequest
 from backend.security.ssrf_guard import is_safe_target
 from backend.worker.tasks import run_scan
 
-Base.metadata.create_all(bind=engine)
+#Base.metadata.create_all(bind=engine)
 configure_logging()
 logger = logging.getLogger("backend")
 limiter = Limiter(key_func=get_remote_address)
