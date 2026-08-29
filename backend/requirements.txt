@@ -1,5 +1,18 @@
 fastapi
+uvicorn
+sqlalchemy
+alembic
 pydantic
+python-dotenv
+# psycopg2-binary is needed when DATABASE_URL points to PostgreSQL.
+psycopg2-binary
 requests
 pytest
+httpx
 responses
+PyJWT
+cryptography
+dnspython
+celery
+redis
+slowapi
