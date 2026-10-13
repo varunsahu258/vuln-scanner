@@ -26,21 +26,21 @@ This project is intentionally **not** a penetration-testing or exploitation fram
 
 ```mermaid
 flowchart LR
-    Browser[React / Vite frontend]
-    API[FastAPI API]
-    Postgres[(Postgres)]
-    Redis[(Redis)]
-    Worker[Celery worker]
-    Modules[6 passive security modules]
+    Browser["React / Vite frontend"]
+    API["FastAPI API"]
+    Postgres[("Postgres")]
+    Redis[("Redis")]
+    Worker["Celery worker"]
+    Modules["6 passive security modules"]
 
-    Browser -->|POST /scan| API
-    API -->|create pending scan record| Postgres
-    API -->|enqueue scan job| Redis
-    Redis -->|deliver job| Worker
-    Worker -->|run checks concurrently| Modules
-    Worker -->|write status and report| Postgres
-    Browser -->|poll GET /scan/{id}/status and GET /scan/{id}| API
-    API -->|read scan status/results| Postgres
+    Browser -->|"POST /scan"| API
+    API -->|"create pending scan record"| Postgres
+    API -->|"enqueue scan job"| Redis
+    Redis -->|"deliver job"| Worker
+    Worker -->|"run checks concurrently"| Modules
+    Worker -->|"write status and report"| Postgres
+    Browser -->|"poll scan status and report"| API
+    API -->|"read scan status/results"| Postgres
 ```
 
 | Component | Location | Responsibility |
